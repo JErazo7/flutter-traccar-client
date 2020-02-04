@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+
 
 void main() => runApp(MyApp());
 
@@ -30,7 +32,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Position position1;
   StreamSubscription<Position> positionStream;
+  final http.Client httpClient = http.Client();
+
   var onOff = false;
+  var baseUrl = 'http://demo4.traccar.org:5055';
+  var id = '1a2s3d';
 
   void _cancelStream() {
     positionStream.cancel();
@@ -43,20 +49,24 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       onOff = true;
     });
-
     var geolocator = Geolocator();
     var locationOptions =
         LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1);
 
     positionStream = geolocator
         .getPositionStream(locationOptions)
-        .listen((Position position) {
-      position1 = position;
-      print(position == null
-          ? 'Unknown'
-          : position.latitude.toString() +
-              ', ' +
-              position.longitude.toString());
+        .listen((Position position) async {
+      if (position != null) {
+        var lat = position.latitude.toString();
+        var lon = position.longitude.toString();
+        var response = await httpClient
+            .post(baseUrl, body: {'id': id, 'lat': lat, 'lon': lon});
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        print(lat+ ', ' + lon);
+      } else {
+        print('Unknown');
+      }
     });
   }
 
