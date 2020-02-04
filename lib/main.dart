@@ -29,13 +29,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Position position1;
+  StreamSubscription<Position> positionStream;
+  var onOff = false;
+
+  void _cancelStream() {
+    positionStream.cancel();
+    setState(() {
+      onOff = false;
+    });
+  }
 
   void _getPosition() async {
+    setState(() {
+      onOff = true;
+    });
+
     var geolocator = Geolocator();
     var locationOptions =
         LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1);
 
-    StreamSubscription<Position> positionStream = geolocator
+    positionStream = geolocator
         .getPositionStream(locationOptions)
         .listen((Position position) {
       position1 = position;
@@ -62,38 +75,41 @@ class _MyHomePageState extends State<MyHomePage> {
               child: SwitchListTile(
                 title: const Text('Estado de servicio'),
                 isThreeLine: true,
-                value: false,
+                value: onOff,
+                onChanged: (_) {
+                  if (onOff) {
+                    _cancelStream();
+                  } else {
+                    _getPosition();
+                  }
+                },
                 subtitle: const Text('Servicio detenido'),
               ),
             ),
             Container(
-              height: 70,
-              child: ListTile(
-                title: Text("Identificador de dispositivo"),
-                subtitle: Text("371455"),
-              )
-            ),
+                height: 70,
+                child: ListTile(
+                  title: Text("Identificador de dispositivo"),
+                  subtitle: Text("371455"),
+                )),
             Container(
-              height: 70,
-              child: ListTile(
-                title: Text("URl del servidor"),
-                subtitle: Text("URL del servidor de seguimiento"),
-              )
-            ),
+                height: 70,
+                child: ListTile(
+                  title: Text("URl del servidor"),
+                  subtitle: Text("URL del servidor de seguimiento"),
+                )),
             Container(
-              height: 70,
-              child: ListTile(
-                title: Text("Precisión"),
-                subtitle: Text("Precisión deseada"),
-              )
-            ),
+                height: 70,
+                child: ListTile(
+                  title: Text("Precisión"),
+                  subtitle: Text("Precisión deseada"),
+                )),
             Container(
-              height: 70,
-              child: ListTile(
-                title: Text("Frecuencia de rastreo"),
-                subtitle: Text("Intervalo para reportes en minutos"),
-              )
-            ),
+                height: 70,
+                child: ListTile(
+                  title: Text("Frecuencia de rastreo"),
+                  subtitle: Text("Intervalo para reportes en minutos"),
+                )),
           ],
         ),
       ),
