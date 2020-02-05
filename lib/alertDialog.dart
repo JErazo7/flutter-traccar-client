@@ -20,7 +20,7 @@ class AlertDialogInput extends StatelessWidget {
         ButtonBar(
           children: <Widget>[
             FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(_controller.text),
                 child: const Text('CANCELAR')
             ),
             FlatButton(
