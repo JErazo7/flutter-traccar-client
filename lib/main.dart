@@ -37,17 +37,21 @@ class _MyHomePageState extends State<MyHomePage> {
   var onOff = false;
   var baseUrl = 'http://demo4.traccar.org:5055';
   var id = '1a2s3d';
+  var estadoServicio = 'Detenido';
+
 
   void _cancelStream() {
     positionStream.cancel();
     setState(() {
       onOff = false;
+      estadoServicio = 'Detenido';
     });
   }
 
   void _getPosition() async {
     setState(() {
       onOff = true;
+      estadoServicio = 'En ejecución';
     });
     var geolocator = Geolocator();
     var locationOptions =
@@ -93,14 +97,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     _getPosition();
                   }
                 },
-                subtitle: const Text('Servicio detenido'),
+                subtitle: Text(estadoServicio),
               ),
             ),
             Container(
                 height: 70,
                 child: ListTile(
                   title: Text("Identificador de dispositivo"),
-                  subtitle: Text("371455"),
+                  subtitle: Text(id),
                 )),
             Container(
                 height: 70,
@@ -118,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 70,
                 child: ListTile(
                   title: Text("Frecuencia de rastreo"),
-                  subtitle: Text("Intervalo para reportes en minutos"),
+                  subtitle: Text("Intervalo para reportes en metros"),
                 )),
           ],
         ),
