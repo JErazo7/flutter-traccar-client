@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final http.Client httpClient = http.Client();
 
   var onOff = false;
-  var baseUrl = 'http://demo4.traccar.org';
+  var baseUrl = 'http://167.172.155.28';
   var id = '1a2s3d';
   var estadoServicio = 'Detenido';
   var campo = [
